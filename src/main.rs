@@ -5,7 +5,17 @@ mod routes;
 use std::sync::RwLock;
 
 use actix_web::{middleware::Logger, web, App, HttpServer};
-use routes::{add_person, delete_person, health, persons, single_person, update_person, AppState};
+use routes::{add_person, delete_person, health, persons, random_persons, single_person, update_person, AppState};
+
+//#[global_allocator]
+//static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
+
+/*#[cfg(not(target_env = "msvc"))]
+use tikv_jemallocator::Jemalloc;
+
+#[cfg(not(target_env = "msvc"))]
+#[global_allocator]
+static GLOBAL: Jemalloc = Jemalloc;*/
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -27,6 +37,7 @@ async fn main() -> std::io::Result<()> {
             .service(add_person)
             .service(delete_person)
             .service(update_person)
+            .service(random_persons)
             .service(health)
     })
     .bind(("0.0.0.0", 8080))?

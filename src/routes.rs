@@ -72,3 +72,11 @@ async fn delete_person(path: web::Path<u32>, data: web::Data<AppState>) -> AppRe
         None => Err(HttpAppError::NotFound),
     }
 }
+
+#[get("/api/random_persons")]
+async fn random_persons() -> AppResponse {
+    let items: Vec<Person> = (0..100)
+        .map(|_| Person::random())
+        .collect();
+    Ok(HttpResponse::Ok().json(items.deref()))
+}

@@ -10,4 +10,6 @@ serde = { version = "1.0.216", features = ["derive"] }
 chrono = { version = "0.4.39", features = ["serde"] }
 thiserror="2.0.8"
 env_logger = "0.11.6"
-
+mimalloc = "0.1.43"
+tikv-jemallocator = "0.6.0"
+fake = "3.0.1"

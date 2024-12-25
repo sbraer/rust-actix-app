@@ -1,5 +1,7 @@
-use chrono::NaiveDate;
+use chrono::{Datelike, Local, NaiveDate};
 use serde::{Deserialize, Serialize};
+use fake::faker::name::en::Name;
+use fake::Fake;
 
 #[derive(Serialize, Deserialize)]
 pub struct Person {
@@ -12,6 +14,25 @@ pub struct Person {
 impl std::fmt::Display for Person {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "{} {} {} {:?}", self.id, self.name, self.age, self.date)
+    }
+}
+
+impl Person {
+    pub fn random() -> Self {
+        let current_year = Local::now().year();
+        let age: u8 = (18..=99).fake::<u8>();
+        let year_of_birth = current_year - i32::from(age);
+
+        Self {
+            id: (1..1000).fake::<u32>(),
+            name: Name().fake(),
+            age,
+            date: NaiveDate::from_ymd_opt(
+                year_of_birth,
+                (1..=12).fake::<u32>(),
+                (1..=28).fake::<u32>(),
+            ).unwrap_or_default(),
+        }
     }
 }
 
