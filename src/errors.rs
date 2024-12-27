@@ -12,7 +12,7 @@ pub type AppResponse = Result<HttpResponse, HttpAppError>;
 #[derive(Debug, Error)]
 pub enum HttpAppError {
     #[error("Poison error {0}")]
-    LockError(String),
+    LockError(&'static str),
 }
 
 impl ResponseError for HttpAppError {
@@ -31,12 +31,12 @@ impl ResponseError for HttpAppError {
 
 impl<T> From<PoisonError<RwLockReadGuard<'_, T>>> for HttpAppError {
     fn from(_: PoisonError<RwLockReadGuard<'_, T>>) -> Self {
-        LockError("Read Lock was poisoned".to_string())
+        LockError("Read Lock was poisoned")
     }
 }
 
 impl<T> From<PoisonError<RwLockWriteGuard<'_, T>>> for HttpAppError {
     fn from(_: PoisonError<RwLockWriteGuard<'_, T>>) -> Self {
-        LockError("Write Lock was poisoned".to_string())
+        LockError("Write Lock was poisoned")
     }
 }

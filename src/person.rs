@@ -1,7 +1,12 @@
 use chrono::{Datelike, Local, NaiveDate};
 use serde::{Deserialize, Serialize};
 
-pub trait RandomGenerator<T> {
+pub trait StructLike {}
+
+pub trait RandomGenerator<T>
+where
+    T: StructLike,
+{
     fn random() -> T;
 }
 
@@ -12,6 +17,8 @@ pub struct Person {
     pub age: u8,
     pub date: NaiveDate,
 }
+
+impl StructLike for Person {}
 
 impl std::fmt::Display for Person {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
