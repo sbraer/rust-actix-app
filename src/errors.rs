@@ -11,10 +11,6 @@ pub type AppResponse = Result<HttpResponse, HttpAppError>;
 
 #[derive(Debug, Error)]
 pub enum HttpAppError {
-    #[error("An element with the same ID already exists")]
-    Conflict,
-    #[error("Not found")]
-    NotFound,
     #[error("Poison error {0}")]
     LockError(String),
 }
@@ -22,8 +18,6 @@ pub enum HttpAppError {
 impl ResponseError for HttpAppError {
     fn status_code(&self) -> StatusCode {
         match self {
-            HttpAppError::Conflict => StatusCode::CONFLICT,
-            HttpAppError::NotFound => StatusCode::NOT_FOUND,
             HttpAppError::LockError(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }

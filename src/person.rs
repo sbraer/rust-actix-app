@@ -1,12 +1,14 @@
 use chrono::{Datelike, Local, NaiveDate};
 use serde::{Deserialize, Serialize};
-use fake::faker::name::en::Name;
-use fake::Fake;
+
+pub trait RandomGenerator<T> {
+    fn random() -> T;
+}
 
 #[derive(Serialize, Deserialize)]
 pub struct Person {
     pub id: u32,
-    pub name: String,
+    pub name: &'static str,
     pub age: u8,
     pub date: NaiveDate,
 }
@@ -17,38 +19,24 @@ impl std::fmt::Display for Person {
     }
 }
 
-impl Person {
-    pub fn random() -> Self {
+impl RandomGenerator<Person> for Person {
+    fn random() -> Self {
+        let names = ["Bob", "Ana", "Jessica", "Mike", "Rick"];
         let current_year = Local::now().year();
-        let age: u8 = (18..=99).fake::<u8>();
+        let age: u8 = fastrand::u8(19..=99);
         let year_of_birth = current_year - i32::from(age);
 
+        let i = fastrand::usize(..names.len());
         Self {
-            id: (1..1000).fake::<u32>(),
-            name: Name().fake(),
+            id: fastrand::u32(1..=999),
+            name: names[i],
             age,
             date: NaiveDate::from_ymd_opt(
                 year_of_birth,
-                (1..=12).fake::<u32>(),
-                (1..=28).fake::<u32>(),
-            ).unwrap_or_default(),
+                fastrand::u32(1..=12),
+                fastrand::u32(1..=28),
+            )
+            .unwrap_or_default(),
         }
     }
-}
-
-pub fn create_person_collection() -> Vec<Person> {
-    vec![
-        Person {
-            id: 1,
-            name: "Mario".to_string(),
-            age: 43,
-            date: NaiveDate::from_ymd_opt(1981, 2, 21).unwrap(),
-        },
-        Person {
-            id: 2,
-            name: "Luigi".to_string(),
-            age: 41,
-            date: NaiveDate::from_ymd_opt(1983, 3, 25).unwrap(),
-        },
-    ]
 }
